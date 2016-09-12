@@ -1,6 +1,9 @@
-# careerticket newsサービス
+# news配信サービス
 
-## ct用の就活情報メールサービスです。
+## 構成
+server => heroku
+web => sitnatra
+db  => mysql
 
 
-## web周りはsitnatraでやる予定
+

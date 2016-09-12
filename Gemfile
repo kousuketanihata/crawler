@@ -2,7 +2,7 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem 'extractcontent', github: 'mono0x/extractcontent'
+gem "extractcontent", github: "mono0x/extractcontent"
 gem "sinatra"
 gem "activerecord"
 gem "mysql2"
@@ -11,3 +11,5 @@ gem 'poltergeist'
 gem "pry-byebug"
 gem "rspec"
 gem "selenium-webdriver"
+gem "heroku"
+gem "activesupport"
