@@ -53,56 +53,64 @@ def parse_content(html)
   return title, content
 end
 
-# fetch_html
+# FacebookEvaluation
+class FacebookEvaluation
+  def initialize(search_url = "http://www.itmedia.co.jp/news/articles/1609/12/news104.html")
+    count_facebook_like_base_uri = "http://graph.facebook.com/?id="
+    puts count_facebook_like_base_uri + search_url
+    facebook = get_json(count_facebook_like_base_uri + search_url)
+    puts facebook["share"]["share_count"]
+    return facebook["share"]["share_count"]
+  end
 
-count_facebook_like_base_uri = "http://graph.facebook.com/?id="
-
-search_url = "http://www.itmedia.co.jp/news/articles/1609/12/news104.html"
-
-puts count_facebook_like_base_uri + search_url
-
-def get_json(location, limit = 10)
-  raise ArgumentError, 'too many HTTP redirects' if limit == 0
-  uri = URI.parse(location)
-  begin
-    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
-      http.open_timeout = 5
-      http.read_timeout = 10
-      http.get(uri.request_uri)
-    end
-    case response
-    when Net::HTTPSuccess
-      json = response.body
-      JSON.parse(json)
-    when Net::HTTPRedirection
-      location = response['location']
-      warn "redirected to #{location}"
-      get_json(location, limit - 1)
-    else
-      puts [uri.to_s, response.value].join(" : ")
+  def get_json(location, limit = 10)
+    raise ArgumentError, 'too many HTTP redirects' if limit == 0
+    uri = URI.parse(location)
+    begin
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+        http.open_timeout = 5
+        http.read_timeout = 10
+        http.get(uri.request_uri)
+      end
+      case response
+      when Net::HTTPSuccess
+        json = response.body
+        JSON.parse(json)
+      when Net::HTTPRedirection
+        location = response['location']
+        warn "redirected to #{location}"
+        get_json(location, limit - 1)
+      else
+        puts [uri.to_s, response.value].join(" : ")
+        # handle error
+      end
+    rescue => e
+      puts [uri.to_s, e.class, e].join(" : ")
       # handle error
-    end
-  rescue => e
-    puts [uri.to_s, e.class, e].join(" : ")
-    # handle error
   end
 end
-
-facebook = get_json(count_facebook_like_base_uri + search_url)
-
-puts facebook["share"]["share_count"]
-
-puts "end"
+# FacebookEvaluation ここまで
 
 # dbへ保存する系
-class Orm < active_record
+class Model < active_record
+end
+
+class User < Model
   # ハッシュを入れる
-  def save()
+  def save(user)
+
+  end
+
+  def stop(user_id)
 
   end
 end
 
-class SendMail
+class Article < Model
+
+end
+
+def fetch_url_from_feedly
 
 end
 
