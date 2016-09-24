@@ -26,17 +26,57 @@ def fetch_urls_from_feedly
   client = Feedlr::Client.new(oauth_access_token: yaml['account']['feedly']['access_token'])
   client.user_subscriptions.map{|m|
     # puts m.id
-    hotentries = client.stream_entries_contents(m.id, :count => 10 ).items
+    hotentries = client.stream_entries_contents(m.id, :count => 5 ).items
     return hotentries
   };
 end
 
-# p fetch_urls_from_feedly
+
+feedly = fetch_urls_from_feedly
+
+urls   = []
+titles = []
+bodies = []
+
+feedly.each do |single|
+  # puts single.alternate.first.href
+  urls.push( single.alternate.first.href )
+end
+
+urls.each { |url|
+  open(url) do |io|
+    html = io.read
+    body, title = ExtractContent.analyse(html)
+      titles.push(title)
+      bodies.push(body)
+  end
+}
+
+config = YAML.load_file( 'env.yaml' )
+p config["db"]["development"]
+
+ActiveRecord::Base.establish_connection(config["db"]["development"])
+
+class Mail < ActiveRecord::Base
+
+end
+
+# 保存する
+
+5.times{|time|
+  mail         = Mail.new
+  mail.url     = urls[time]
+  mail.title   = titles[time]
+  mail.content = bodies[time]
+  mail.save
+}
 
 
-urls = Nokogiri::XML(fetch_urls_from_feedly.to_s)
+def save_content(urls, titles, bodies)
+  
+end
 
-p urls
+
 
 def fetch_html
         Capybara.register_driver :poltergeist do |app|
