@@ -1,5 +1,5 @@
-create database mail_news;
-create table mail_news.user(
+create database mail;
+create table mail.user(
     id int not null auto_increment primary key,
     name text,
     email text,
@@ -7,12 +7,12 @@ create table mail_news.user(
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP
 );
-create table mail_news.content(
+create table mail.mails(
     id int not null auto_increment primary key,
-    url text UNIQUE,
+    url text,
     title text,
-    html text,
     content text,
-    create_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at DATETIME,
+    updated_at DATETIME
 );
+
